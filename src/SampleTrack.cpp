@@ -38,6 +38,18 @@ uint64_t SampleTrack::GetDuration() const
     return mFrames / mSamplerate;
 }
 
+Buffer SampleTrack::GetBuffer()
+{
+    // TODO: implement method
+    return Buffer(mChannels, mFrames / mChannels, mSamplerate);
+}
+
+Buffer SampleTrack::GetBuffer(int32_t timeStart, int32_t timeEnd)
+{
+    // TODO: implement method
+    return Buffer(mChannels, mFrames / mChannels, mSamplerate);
+}
+
 void SampleTrack::LoadFromFile(const std::string &file)
 {
     SF_INFO info;

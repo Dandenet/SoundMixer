@@ -1,5 +1,8 @@
 #ifndef SAMPLETRACK_H
 #define SAMPLETRACK_H
+
+#include "Buffer.hpp"
+
 #include <stdint.h>
 #include <string>
 #include <sndfile.h>
@@ -16,6 +19,9 @@ public:
     int64_t GetFrames() const;
 
     uint64_t GetDuration() const;
+
+    Buffer GetBuffer();
+    Buffer GetBuffer(int32_t timeStart, int32_t timeEnd);
 
 private:
     int32_t mSamplerate;
