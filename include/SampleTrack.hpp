@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <memory>
 #include <sndfile.h>
 
 class SampleTrack
@@ -20,8 +21,8 @@ public:
 
     uint64_t GetDuration() const;
 
-    Buffer GetBuffer();
-    Buffer GetBuffer(int32_t timeStart, int32_t timeEnd);
+    std::shared_ptr<Buffer> GetBuffer();
+    std::shared_ptr<Buffer> GetBuffer(int32_t timeStart, int32_t timeEnd);
 
 private:
     int32_t mSamplerate;

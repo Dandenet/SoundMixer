@@ -25,8 +25,8 @@ BOOST_AUTO_TEST_CASE(TrackDurationTest)
 BOOST_AUTO_TEST_CASE(TrackBufferTest)
 {
     SampleTrack sampleTrack("test.wav");
-    Buffer buffer = sampleTrack.GetBuffer();
-    auto& data = buffer.Data();
+    std::shared_ptr<Buffer> buffer = sampleTrack.GetBuffer();
+    auto& data = buffer->Data();
 
     std::ifstream file("data");
 
@@ -47,14 +47,14 @@ BOOST_AUTO_TEST_CASE(TrackBufferTimeTest)
     int32_t timeStart = 10;
     int32_t timeEnd = 20;
 
-    Buffer buffer1 = sampleTrack.GetBuffer();
-    Buffer buffer2 = sampleTrack.GetBuffer(timeStart, timeEnd);
+    std::shared_ptr<Buffer> buffer1 = sampleTrack.GetBuffer();
+    std::shared_ptr<Buffer> buffer2 = sampleTrack.GetBuffer(timeStart, timeEnd);
 
-    auto& data1 = buffer1.Data();
-    auto& data2 = buffer2.Data();
+    auto& data1 = buffer1->Data();
+    auto& data2 = buffer2->Data();
 
-    int64_t frameStart = timeStart * buffer1.GetNumChannels() * buffer1.GetSempleRate();
-    int64_t frameEnd   = timeEnd   * buffer1.GetNumChannels() * buffer1.GetSempleRate();
+    int64_t frameStart = timeStart * buffer1->GetNumChannels() * buffer1->GetSempleRate();
+    int64_t frameEnd   = timeEnd   * buffer1->GetNumChannels() * buffer1->GetSempleRate();
 
     for (int64_t i = frameStart, j = 0; i < frameEnd; ++i, ++j)
     {
