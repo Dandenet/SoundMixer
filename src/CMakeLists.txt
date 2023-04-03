@@ -1,5 +1,8 @@
 find_package(SndFile CONFIG REQUIRED)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 SET(ROOT_SOURCE SampleTrack.cpp
                 Buffer.cpp)
 

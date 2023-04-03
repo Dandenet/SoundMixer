@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <exception>
+#include <iostream>
 
 
 
@@ -40,14 +41,58 @@ uint64_t SampleTrack::GetDuration() const
 
 Buffer SampleTrack::GetBuffer()
 {
-    // TODO: implement method
-    return Buffer(mChannels, mFrames / mChannels, mSamplerate);
+    sf_seek(mFile, 0, SEEK_SET);
+
+    Buffer buffer = Buffer(mChannels, mFrames, mSamplerate);
+
+    const size_t maxNumFrames = 1024;
+    float frames[maxNumFrames];
+
+    size_t startToInsert = 0;
+    sf_count_t framesNum = 0;
+    auto& data = buffer.Data();
+    while ((framesNum = sf_read_float(mFile, frames, maxNumFrames)))
+    {
+        for (int64_t j = 0; j < framesNum; ++j)
+        {
+            data[startToInsert] = frames[j];
+            startToInsert++;
+        }
+    }
+
+    return buffer;
 }
 
 Buffer SampleTrack::GetBuffer(int32_t timeStart, int32_t timeEnd)
 {
-    // TODO: implement method
-    return Buffer(mChannels, mFrames / mChannels, mSamplerate);
+    assert(timeEnd > timeStart);
+
+    int64_t numFrames = (timeEnd - timeStart) * mSamplerate * mChannels;
+    int64_t offset = timeStart * mSamplerate;
+    sf_seek(mFile, offset, SEEK_SET);
+
+
+    Buffer buffer(mChannels, numFrames, mSamplerate);
+
+    const int64_t maxNumFrames = 1024;
+    float frames[maxNumFrames];
+
+    size_t startToInsert = 0;
+    sf_count_t numFramesRead;
+    auto& data = buffer.Data();
+
+    while((numFramesRead = sf_read_float(mFile, frames, std::min(maxNumFrames, numFrames))))
+    {
+        for (int64_t j = 0; j < numFramesRead; ++j)
+        {
+            data[startToInsert] = frames[j];
+            startToInsert++;
+        }
+
+        numFrames -= numFramesRead;
+    }
+
+    return buffer;
 }
 
 void SampleTrack::LoadFromFile(const std::string &file)
