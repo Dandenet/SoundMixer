@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE SoundMixerTest
+#define BOOST_TEST_MODULE SampleTrackTest
 #include <boost/test/unit_test.hpp>
 #include <SampleTrack.hpp>
 #include <cmath>
