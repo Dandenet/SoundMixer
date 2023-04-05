@@ -40,7 +40,7 @@ std::shared_ptr<Buffer> Mixer::Mix()
 
     /* Mixes two track with a linear algorithm.
      * Adds a sample of the first track to a sample of the second track
-     * It then normalize the amlitude, and goes to the next track
+     * Then it normalizes the buffer amplitude and goes to the next track
     */
     for (it = std::next(mBuffers.begin()); it != mBuffers.end(); ++it)
     {
@@ -48,14 +48,7 @@ std::shared_ptr<Buffer> Mixer::Mix()
         for (size_t i = 0; i < currentBufferData.size(); ++i)
             mixBufferData[i]+= currentBufferData[i];
 
-        // find the maximum absolute amplitude
-        float maxAbsAmpl = 0.f;
-        for (size_t i = 0; i < mixBufferData.size(); ++i)
-            maxAbsAmpl = std::max(std::abs(mixBufferData[i]), maxAbsAmpl);
-
-        // normalize the mix buffer amplitude
-        for (size_t i = 0; i < mixBufferData.size(); ++i)
-            maxAbsAmpl /= maxAbsAmpl;
+        mixBuffer->Normalize();
     }
 
     return mixBuffer;

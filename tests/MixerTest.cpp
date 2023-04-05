@@ -45,7 +45,47 @@ BOOST_AUTO_TEST_CASE(MixBuffers)
 
     for (int32_t i = 0; i < numChannels * numSampels1; ++i)
     {
-        BOOST_REQUIRE_LE(std::abs(result[i] - array3[i]), eps);
+            BOOST_REQUIRE_LE(std::abs(result[i] - array3[i]), eps);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(MixBuffersWithNormalization)
+{
+    const int32_t numChannels = 2;
+    const int64_t numSampels = 5;
+    const int64_t sampleRate  = 1;
+
+    std::shared_ptr<Buffer> buffer1( new Buffer(numChannels, numSampels, sampleRate));
+    std::shared_ptr<Buffer> buffer2( new Buffer(numChannels, numSampels, sampleRate));
+
+    float array1[numChannels * numSampels] = {
+        0.f,    0.f,    0.1f,   0.1f, 0.2f,
+        0.1f,   0.1f,   0.2f,   1.0f, 1.0f,
+    };
+
+    float array2[numChannels * numSampels] = {
+        0.f,    0.f,    0.1f,   0.1f, 0.2f,
+        0.1f,   0.1f,   0.2f,   1.0f, 1.0f
+    };
+
+    float array3[numChannels * numSampels] = {
+        0.f,    0.f,    0.1f,   0.1f, 0.2f,
+        0.1f,   0.1f,   0.2f,   1.0f, 1.0f,
+    };
+
+    memmove(buffer1->Data().data(), &array1, sizeof(array1));
+    memmove(buffer2->Data().data(), &array2, sizeof(array2));
+
+    Mixer mixer;
+    mixer.Attach(buffer1);
+    mixer.Attach(buffer2);
+
+    auto resBuffer = mixer.Mix();
+    auto& result = resBuffer->Data();
+
+    for (int32_t i = 0; i < numChannels * numSampels; ++i)
+    {
+            BOOST_REQUIRE_LE(std::abs(result[i] - array3[i]), eps);
     }
 }
 

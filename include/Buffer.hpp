@@ -34,6 +34,8 @@ public:
         return mBuffer;
     }
 
+    void Normalize();
+
 private:
     int64_t mSamples;
     int32_t mSamplerate;
