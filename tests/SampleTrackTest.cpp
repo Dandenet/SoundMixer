@@ -21,7 +21,6 @@ BOOST_AUTO_TEST_CASE(TrackDurationTest)
     BOOST_CHECK_EQUAL(sampleTrack.GetDuration(), 153);
 }
 
-#if 0
 BOOST_AUTO_TEST_CASE(TrackBufferTest)
 {
     SampleTrack sampleTrack("test.wav");
@@ -38,7 +37,6 @@ BOOST_AUTO_TEST_CASE(TrackBufferTest)
     }
 
 }
-#endif
 
 BOOST_AUTO_TEST_CASE(TrackBufferTimeTest)
 {

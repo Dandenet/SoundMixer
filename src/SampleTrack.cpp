@@ -44,22 +44,8 @@ std::shared_ptr<Buffer> SampleTrack::GetBuffer()
     sf_seek(mFile, 0, SEEK_SET);
 
     std::shared_ptr<Buffer> buffer(new Buffer(mChannels, mFrames, mSamplerate));
-
-    const size_t maxNumFrames = 1024;
-    float frames[maxNumFrames];
-
-    size_t startToInsert = 0;
-    sf_count_t framesNum = 0;
     auto& data = buffer->Data();
-    while ((framesNum = sf_read_float(mFile, frames, maxNumFrames)))
-    {
-        for (int64_t j = 0; j < framesNum; ++j)
-        {
-            data[startToInsert] = frames[j];
-            startToInsert++;
-        }
-    }
-
+    sf_read_float(mFile, data.data(), mFrames * mChannels);
     return buffer;
 }
 
@@ -67,31 +53,14 @@ std::shared_ptr<Buffer> SampleTrack::GetBuffer(int32_t timeStart, int32_t timeEn
 {
     assert(timeEnd > timeStart);
 
-    int64_t numFrames = (timeEnd - timeStart) * mSamplerate * mChannels;
+    int64_t numFrames = (timeEnd - timeStart) * mSamplerate;
     int64_t offset = timeStart * mSamplerate;
     sf_seek(mFile, offset, SEEK_SET);
 
 
     std::shared_ptr<Buffer> buffer( new Buffer(mChannels, numFrames, mSamplerate));
-
-    const int64_t maxNumFrames = 1024;
-    float frames[maxNumFrames];
-
-    size_t startToInsert = 0;
-    sf_count_t numFramesRead;
     auto& data = buffer->Data();
-
-    while((numFramesRead = sf_read_float(mFile, frames, std::min(maxNumFrames, numFrames))))
-    {
-        for (int64_t j = 0; j < numFramesRead; ++j)
-        {
-            data[startToInsert] = frames[j];
-            startToInsert++;
-        }
-
-        numFrames -= numFramesRead;
-    }
-
+    sf_read_float(mFile, data.data(), numFrames * mChannels);
     return buffer;
 }
 
