@@ -64,6 +64,40 @@ std::shared_ptr<Buffer> SampleTrack::GetBuffer(int32_t timeStart, int32_t timeEn
     return buffer;
 }
 
+void SampleTrack::Save(const std::shared_ptr<Buffer>& buffer,
+                       const std::string& trackName)
+{
+    SF_INFO info;
+    info.channels = buffer->GetNumChannels();
+    info.frames = buffer->GetNumSamples();
+    info.samplerate = buffer->GetSempleRate();
+    info.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+
+    SNDFILE* file = sf_open(trackName.c_str(), SFM_WRITE, &info);
+    if (!file)
+    {
+        std::stringstream ss;
+        ss << "Error creating file " << trackName << ": " << sf_strerror(file);
+        throw std::exception(ss.str().c_str());
+    }
+
+    auto& bufferData = buffer->Data();
+    size_t buffeSize = bufferData.size();
+
+    sf_count_t numFramesWriten =  sf_write_float(file, bufferData.data(), buffeSize);
+    if (numFramesWriten != buffeSize)
+    {
+
+        std::stringstream ss;
+        ss << "Error write to file " << trackName << ": " << sf_strerror(file);
+        sf_close(file);
+
+        throw std::exception(ss.str().c_str());
+    }
+
+    sf_close(file);
+}
+
 void SampleTrack::LoadFromFile(const std::string &file)
 {
     SF_INFO info;

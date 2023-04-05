@@ -61,4 +61,18 @@ BOOST_AUTO_TEST_CASE(TrackBufferTimeTest)
 
 }
 
+BOOST_AUTO_TEST_CASE(TrackSaveTest)
+{
+     SampleTrack sampleTrack("test.wav");
+
+     int32_t timeStart = 10;
+     int32_t timeEnd = 20;
+     std::shared_ptr<Buffer> buffer = sampleTrack.GetBuffer(timeStart, timeEnd);
+     SampleTrack::Save(buffer, "save.wav");
+
+     SampleTrack saved("save.wav");
+
+     BOOST_REQUIRE_EQUAL(saved.GetDuration(), timeEnd - timeStart);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

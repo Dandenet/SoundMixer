@@ -24,6 +24,9 @@ public:
     std::shared_ptr<Buffer> GetBuffer();
     std::shared_ptr<Buffer> GetBuffer(int32_t timeStart, int32_t timeEnd);
 
+    static void Save(const std::shared_ptr<Buffer>& buffer,
+                     const std::string& trackName);
+
 private:
     int32_t mSamplerate;
     int32_t mChannels;
