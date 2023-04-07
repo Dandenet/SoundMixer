@@ -51,6 +51,7 @@ void SoundTrackListModel::Delete(int index)
 {
     beginRemoveRows(QModelIndex(), index, index);
 
+    delete *(mSoundTracks.begin() + index);
     mSoundTracks.erase(mSoundTracks.begin() + index);
 
     endRemoveRows();
